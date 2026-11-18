@@ -1,0 +1,20 @@
+# ---- Patient Portal: Apache hardening ----
+Options -Indexes
+ServerSignature Off
+
+# Block hidden files (.git, .htaccess, .env), database dumps, backups, docs
+<FilesMatch "(^\.|\.(sql|bak|old|log|ini|md|sh|inc)$)">
+    Require all denied
+</FilesMatch>
+RedirectMatch 404 /\.git
+
+<IfModule mod_headers.c>
+    Header set X-Frame-Options "DENY"
+    Header set X-Content-Type-Options "nosniff"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    Header unset X-Powered-By
+</IfModule>
+
+# Friendly error pages
+ErrorDocument 403 /patient/403.php
+ErrorDocument 404 /patient/404.php
