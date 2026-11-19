@@ -36,6 +36,6 @@
     <p class="footer-bottom">&copy; <?= date('Y') ?> <?= e(APP_NAME) ?>. All rights reserved.</p>
 </footer>
 <?php endif; ?>
-<script src="<?= e(url('assets/js/app.js')) ?>"></script>
+<script src="<?= e(url('assets/js/app.js') . '?v=' . filemtime(__DIR__ . '/../assets/js/app.js')) ?>"></script>
 </body>
 </html>

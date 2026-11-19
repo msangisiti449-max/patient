@@ -17,7 +17,8 @@ $showApp = $user && empty($publicLayout);
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link rel="stylesheet" href="<?= e(url('assets/css/style.css')) ?>">
+    <?php /* ?v=<file time> makes browsers download the new file after every change instead of using a cached copy */ ?>
+    <link rel="stylesheet" href="<?= e(url('assets/css/style.css') . '?v=' . filemtime(__DIR__ . '/../assets/css/style.css')) ?>">
 </head>
 <body class="<?= $showApp ? 'app' : 'public' ?>" data-base="<?= e(BASE_URL) ?>">
 <?php if ($showApp): ?>

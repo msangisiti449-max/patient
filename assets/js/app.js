@@ -29,6 +29,97 @@
         });
     }
 
+    // ---- Scroll effects (public pages) ----
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (document.body.classList.contains('public')) {
+        // Progress bar, nav shadow and back-to-top button
+        var bar = document.createElement('div');
+        bar.className = 'scroll-progress';
+        document.body.appendChild(bar);
+        var toTop = document.createElement('button');
+        toTop.type = 'button';
+        toTop.className = 'to-top';
+        toTop.setAttribute('aria-label', 'Back to top');
+        var arrow = document.createElement('i');
+        arrow.className = 'fa-solid fa-arrow-up';
+        toTop.appendChild(arrow);
+        document.body.appendChild(toTop);
+        toTop.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' }); });
+
+        var ticking = false;
+        var onScroll = function () {
+            var y = window.scrollY || document.documentElement.scrollTop;
+            var max = document.documentElement.scrollHeight - window.innerHeight;
+            bar.style.transform = 'scaleX(' + (max > 0 ? Math.min(y / max, 1) : 0) + ')';
+            document.body.classList.toggle('scrolled', y > 10);
+            toTop.classList.toggle('show', y > 600);
+            ticking = false;
+        };
+        window.addEventListener('scroll', function () {
+            if (!ticking) { ticking = true; window.requestAnimationFrame(onScroll); }
+        }, { passive: true });
+        onScroll();
+
+        // Reveal blocks as they scroll into view. Only elements that start BELOW the
+        // visible screen are hidden, so nothing flickers on page load, and if JavaScript
+        // is off everything simply shows normally.
+        if (!reduceMotion && 'IntersectionObserver' in window) {
+            var groups = [
+                ['.section > .eyebrow, .section > h2, .section > .lead, .cta-band > *, .prose > *', ''],
+                ['.service-card, .step, .feature, .doctor-card, .faq-item, .adv-item, .adv-list li, .service-detail, .chip-nav', ''],
+                ['.split > :first-child, .contact-info .contact-item', 'reveal-left'],
+                ['.split > :last-child, .security-list li, .contact-grid > .card', 'reveal-right'],
+                ['.mission, .emergency-note', 'reveal-zoom']
+            ];
+            var observer = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        var t = entry.target;
+                        t.classList.add('in');
+                        observer.unobserve(t);
+                        // Once shown, drop the reveal classes so hover effects work normally again
+                        setTimeout(function () {
+                            t.classList.remove('reveal', 'in', 'reveal-left', 'reveal-right', 'reveal-zoom');
+                            t.style.removeProperty('--reveal-delay');
+                        }, 1100);
+                    }
+                });
+            }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+            var seen = [];
+            groups.forEach(function (g) {
+                document.querySelectorAll(g[0]).forEach(function (el) {
+                    if (seen.indexOf(el) !== -1) { return; }
+                    seen.push(el);
+                    if (el.getBoundingClientRect().top < window.innerHeight) { return; } // already on screen
+                    // Stagger siblings in the same grid: 0, 80, 160 ms ...
+                    var idx = Array.prototype.indexOf.call(el.parentElement.children, el) % 4;
+                    el.style.setProperty('--reveal-delay', (idx * 0.08) + 's');
+                    el.classList.add('reveal');
+                    if (g[1]) { el.classList.add(g[1]); }
+                    observer.observe(el);
+                });
+            });
+        }
+
+        // Count-up for hero numbers like "24/7", "8", "100%"
+        if (!reduceMotion) {
+            document.querySelectorAll('.hero-stats strong').forEach(function (el) {
+                var m = el.textContent.match(/^(\d+)(.*)$/);
+                if (!m || m[2].charAt(0) === '/') { return; }
+                var target = parseInt(m[1], 10), suffix = m[2], start = null, dur = 1200;
+                var step = function (ts) {
+                    if (start === null) { start = ts; }
+                    var p = Math.min((ts - start) / dur, 1);
+                    el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))) + suffix;
+                    if (p < 1) { window.requestAnimationFrame(step); }
+                };
+                el.textContent = '0' + suffix;
+                window.requestAnimationFrame(step);
+            });
+        }
+    }
+
     // ---- Confirm before dangerous actions: <form data-confirm="..."> ----
     document.querySelectorAll('form[data-confirm]').forEach(function (form) {
         form.addEventListener('submit', function (ev) {
