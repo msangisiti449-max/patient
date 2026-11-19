@@ -1,0 +1,6 @@
+# Admin area: second lock layer. Every PHP page here also calls require_role('admin').
+Options -Indexes
+# Only PHP pages may be requested here; everything else is denied.
+<FilesMatch "\.(?!php$)[^.]+$">
+    Require all denied
+</FilesMatch>
