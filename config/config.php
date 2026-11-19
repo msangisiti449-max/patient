@@ -17,6 +17,18 @@ define('APP_NAME', 'CarePoint Patient Portal');
 // URL path where the project lives inside htdocs (no trailing slash).
 define('BASE_URL', '/patient');
 define('CURRENCY', 'TZS');
+
+// ---- Hospital contact details (shown on public pages; edit to match your hospital) ----
+define('HOSPITAL_NAME', 'CarePoint Hospital');
+define('HOSPITAL_ADDRESS', 'Plot 12, Health Avenue, Dar es Salaam, Tanzania');
+define('HOSPITAL_PHONE', '+255 700 000 000');
+define('HOSPITAL_EMAIL', 'info@carepoint.local');
+define('HOSPITAL_EMERGENCY', '112');
+define('HOSPITAL_HOURS', [
+    'Monday - Friday' => '08:00 - 17:00',
+    'Saturday'        => '08:00 - 13:00',
+    'Sunday'          => 'Closed (emergency only)',
+]);
 date_default_timezone_set('Africa/Dar_es_Salaam');
 
 // ---- Security -------------------------------------------------------------

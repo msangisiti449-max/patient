@@ -16,6 +16,19 @@
         backdrop.addEventListener('click', function () { document.body.classList.remove('sidebar-open'); });
     }
 
+    // ---- Public site menu toggle (mobile) ----
+    var navToggle = document.getElementById('navToggle');
+    if (navToggle) {
+        navToggle.addEventListener('click', function () {
+            var open = document.body.classList.toggle('nav-open');
+            navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+            navToggle.querySelector('i').className = open ? 'fa-solid fa-xmark' : 'fa-solid fa-bars';
+        });
+        document.querySelectorAll('#publicMenu a').forEach(function (a) {
+            a.addEventListener('click', function () { document.body.classList.remove('nav-open'); });
+        });
+    }
+
     // ---- Confirm before dangerous actions: <form data-confirm="..."> ----
     document.querySelectorAll('form[data-confirm]').forEach(function (form) {
         form.addEventListener('submit', function (ev) {

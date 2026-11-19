@@ -40,9 +40,26 @@ $showApp = $user && empty($publicLayout);
         </header>
         <main class="content">
 <?php else: ?>
+<?php
+$publicLinks = [
+    'index.php'    => ['fa-house',         'Home'],
+    'about.php'    => ['fa-hospital',      'About Us'],
+    'services.php' => ['fa-stethoscope',   'Services'],
+    'doctors.php'  => ['fa-user-doctor',   'Our Doctors'],
+    'contact.php'  => ['fa-phone',         'Contact Us'],
+    'index.php#faq'=> ['fa-circle-question','FAQ'],
+];
+$currentPublic = basename($_SERVER['SCRIPT_NAME'] ?? '');
+?>
 <header class="public-nav">
     <a class="brand" href="<?= e(url('index.php')) ?>"><i class="fa-solid fa-heart-pulse"></i><span>CarePoint</span></a>
-    <div class="btn-row">
+    <button class="icon-btn nav-toggle" id="navToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="publicMenu"><i class="fa-solid fa-bars"></i></button>
+    <nav class="public-links" id="publicMenu" aria-label="Main">
+        <?php foreach ($publicLinks as $href => [$icon, $label]): ?>
+            <a href="<?= e(url($href)) ?>" class="<?= $href === $currentPublic ? 'active' : '' ?>"><i class="fa-solid <?= e($icon) ?>"></i> <?= e($label) ?></a>
+        <?php endforeach; ?>
+    </nav>
+    <div class="btn-row nav-actions">
         <?php if ($user): ?>
             <a class="btn btn-primary" href="<?= e(url(dashboard_path($user['role']))) ?>"><i class="fa-solid fa-gauge-high"></i> My Dashboard</a>
         <?php else: ?>

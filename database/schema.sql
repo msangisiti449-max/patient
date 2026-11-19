@@ -5,7 +5,7 @@ CREATE DATABASE IF NOT EXISTS patient_portal CHARACTER SET utf8mb4 COLLATE utf8m
 USE patient_portal;
 
 SET FOREIGN_KEY_CHECKS = 0;
-DROP TABLE IF EXISTS audit_log, login_attempts, medication_reminders, notifications, payments, bills,
+DROP TABLE IF EXISTS contact_messages, audit_log, login_attempts, medication_reminders, notifications, payments, bills,
     messages, prescription_requests, prescriptions, lab_results, appointments, medical_records,
     doctors_profile, users;
 SET FOREIGN_KEY_CHECKS = 1;
@@ -179,6 +179,21 @@ CREATE TABLE audit_log (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
     INDEX (created_at)
+) ENGINE=InnoDB;
+
+CREATE TABLE contact_messages (
+    id         INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name       VARCHAR(100) NOT NULL,
+    email      VARCHAR(150) NOT NULL,
+    phone      VARCHAR(20)  NULL,
+    subject    VARCHAR(50)  NOT NULL,
+    message    TEXT NOT NULL,
+    user_id    INT UNSIGNED NULL,
+    ip         VARCHAR(45)  NULL,
+    status     ENUM('new','read','replied') NOT NULL DEFAULT 'new',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
+    INDEX (status), INDEX (ip, created_at)
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------

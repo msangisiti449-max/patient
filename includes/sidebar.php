@@ -27,6 +27,7 @@ $menus = [
         ['admin/users.php',        'fa-users-gear',          'Users'],
         ['admin/appointments.php', 'fa-calendar-days',       'Appointments'],
         ['admin/bills.php',        'fa-file-invoice-dollar', 'Billing'],
+        ['admin/contact-messages.php', 'fa-inbox',            'Contact Messages'],
         ['admin/audit-log.php',    'fa-clipboard-list',      'Audit Log'],
         ['notifications.php',      'fa-bell',                'Notifications'],
         ['profile.php',            'fa-id-card',             'My Profile'],
